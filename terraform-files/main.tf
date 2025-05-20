@@ -59,8 +59,11 @@ resource "aws_iam_role" "ec2full" {
       },
     ]
   })
+}
 
-  managed_policy_arns = ["arn:aws:iam::aws:policy/AmazonEC2FullAccess"]
+resource "aws_iam_role_policy_attachment" "ec2full_attach" {
+  role       = aws_iam_role.ec2full.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
 }
 
 resource "aws_iam_instance_profile" "ec2full" {
@@ -118,7 +121,7 @@ resource "null_resource" "config" {
     host = aws_instance.control_node.public_ip
     type = "ssh"
     user = "ec2-user"
-    private_key = file("~/.ssh/${var.mykey}.pem")
+    private_key = file("/User/kubi/Desktop/${var.mykey}.pem")
     # Do not forget to define your key file path correctly!
   }
 
@@ -134,7 +137,7 @@ resource "null_resource" "config" {
 
   provisioner "file" {
     # Do not forget to define your key file path correctly!
-    source = "~/.ssh/${var.mykey}.pem"
+    source = "/User/kubi/Desktop/${var.mykey}.pem"
     destination = "/home/ec2-user/${var.mykey}.pem"
   }
 
